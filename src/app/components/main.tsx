@@ -186,20 +186,28 @@ export default function ExpenseTracker() {
                 {/* Spindle Pin */}
                 <div className="flex flex-row-reverse w-auto z-10 max-w-[15rem] sm:max-w-[18rem] lg:max-w-[36rem]">
                   {lifetimeExpenses.slice(-10).map((expense, index) => (
-                    <div
-                      key={expense.id}
-                      className="relative w-20 h-10 truncate p-2 text-xs font-semibold text-black rounded-md shadow-lg"
-                      style={{
-                        marginLeft: -10, // Overlapping effect
-                        backgroundColor: expense.color,
-                        transform: `rotate(${
-                          index % 2 === 0 ? "-5deg" : "5deg"
-                        })`,
-                        zIndex: 5 - index,
-                      }}
+                    <Tooltip
+                      content={`
+                    ${expense.payer} paid $${expense.amount.toFixed(2)} for ${
+                        expense.name
+                      }
+                    `}
                     >
-                      {expense.name} <br /> ${expense.amount.toFixed(2)}
-                    </div>
+                      <div
+                        key={expense.id}
+                        className="relative w-20 h-10 truncate p-2 text-xs font-semibold text-black rounded-md shadow-lg"
+                        style={{
+                          marginLeft: -10, // Overlapping effect
+                          backgroundColor: expense.color,
+                          transform: `rotate(${
+                            index % 2 === 0 ? "-5deg" : "5deg"
+                          })`,
+                          zIndex: 5 - index,
+                        }}
+                      >
+                        {expense.name} <br /> ${expense.amount.toFixed(2)}
+                      </div>
+                    </Tooltip>
                   ))}
                 </div>{" "}
                 <SplitIcon className="absolute right-[-2rem] z-5 ml-auto rotate-90 size-8 mr-2" />
