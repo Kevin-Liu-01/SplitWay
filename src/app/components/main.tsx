@@ -5,8 +5,9 @@ import ExpenseList from "./main/expenseList";
 import PeopleList from "./main/peopleList";
 import DropZone from "./main/dropZone";
 import { v4 as uuidv4 } from "uuid";
-import { Text } from "@radix-ui/themes";
+import { Flex, Text, Tooltip } from "@radix-ui/themes";
 import useLocalStorage from "../utils/useLocalStorage";
+import { SplitIcon } from "lucide-react";
 
 // Type definitions for Person, Expense, and AssignedPayment
 interface Person {
@@ -35,6 +36,10 @@ interface AssignedPayment {
 export default function ExpenseTracker() {
   const [people, setPeople] = useLocalStorage("people", []);
   const [expenses, setExpenses] = useLocalStorage("expenses", []);
+  const [lifetimeExpenses, setLifetimeExpenses] = useLocalStorage(
+    "lifetimeExpenses",
+    []
+  );
   const [sharedExpenses, setSharedExpenses] = useState<ExpenseItem[]>([
     {
       id: uuidv4(),
@@ -83,8 +88,6 @@ export default function ExpenseTracker() {
     });
     setPeople(updatedPeople);
   }, [expenses]);
-
-  console.log(people);
 
   const addPerson = (name: string): void => {
     setPeople([...people, { id: uuidv4(), name, balance: 0 }]);
@@ -149,6 +152,10 @@ export default function ExpenseTracker() {
       ...expenses,
       { ...expense, id: newExpenseId, assignedPayments },
     ]);
+    setLifetimeExpenses([
+      ...lifetimeExpenses,
+      { ...expense, id: newExpenseId, assignedPayments },
+    ]);
 
     if (expense.remove !== false) {
       setSharedExpenses(sharedExpenses.filter((e) => e.id !== active.id));
@@ -158,13 +165,49 @@ export default function ExpenseTracker() {
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="h-screen w-full">
-        <div className="flex flex-col h-full gap-4">
-          <h1 className="text-4xl p-6 pb-1 font-bold font-anek">
-            <Text className=" font-extrabold">Split</Text>
-            <Text>Way</Text>
-          </h1>
+        <Flex className=" flex-col h-full gap-4">
+          <Flex align="center" className="flex-col sm:flex-row p-6 pb-1">
+            <h1 className="flex items-center text-4xl font-bold font-anek">
+              <Text className=" font-extrabold">Split</Text>
+              <Text>Way</Text>{" "}
+              <SplitIcon className="mb-3 rotate-90 size-8 mr-2" />
+            </h1>
 
-          <div className="flex h-[calc(100vh-6rem)] px-6 pb-6 gap-6 flex-row">
+            {/* Resume Spindle (Horizontal) */}
+            <Tooltip content="These are all your past expenses!">
+              <div className="relative sm:absolute sm:ml-auto ml-[4.5rem] right-12 flex font-anek items-center gap-2">
+                {/* <button
+                onClick={() => setLifetimeExpenses([])}
+                className="bg-red-500 text-white px-4 py-2 rounded-md shadow-md focus:outline-none hover:bg-red-600"
+              >
+                Empty
+              </button> */}
+                <div className="h-3 w-3 bg-gray-700 z-5 rounded-full" />
+                {/* Spindle Pin */}
+                <div className="flex flex-row-reverse w-auto z-10 max-w-[15rem] sm:max-w-[18rem] lg:max-w-[36rem]">
+                  {lifetimeExpenses.slice(-10).map((expense, index) => (
+                    <div
+                      key={expense.id}
+                      className="relative w-20 h-10 truncate p-2 text-xs font-semibold text-black rounded-md shadow-lg"
+                      style={{
+                        marginLeft: -10, // Overlapping effect
+                        backgroundColor: expense.color,
+                        transform: `rotate(${
+                          index % 2 === 0 ? "-5deg" : "5deg"
+                        })`,
+                        zIndex: 5 - index,
+                      }}
+                    >
+                      {expense.name} <br /> ${expense.amount.toFixed(2)}
+                    </div>
+                  ))}
+                </div>{" "}
+                <SplitIcon className="absolute right-[-2rem] z-5 ml-auto rotate-90 size-8 mr-2" />
+              </div>
+            </Tooltip>
+          </Flex>
+
+          <div className="flex h-[calc(100vh-6rem)] px-6 pb-6 gap-6 flex-col sm:flex-row">
             <PeopleList
               people={people}
               addPerson={addPerson}
@@ -182,7 +225,7 @@ export default function ExpenseTracker() {
               people={people}
             />
           </div>
-        </div>
+        </Flex>
       </div>
     </DndContext>
   );

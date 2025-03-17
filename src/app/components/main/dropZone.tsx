@@ -3,7 +3,7 @@ import { Droppable } from "../ui/droppable";
 import { Card, CardContent } from "../ui/card";
 import { Checkbox } from "../ui/checkbox";
 import { Button } from "../ui/button";
-import { CircleDollarSignIcon, TrashIcon } from "lucide-react";
+import { CircleDollarSignIcon, TrashIcon, UserSearchIcon } from "lucide-react";
 import { Flex, Text } from "@radix-ui/themes";
 import MoneyText from "../ui/moneyText";
 import { adjustColor } from "@/app/utils/util";
@@ -139,9 +139,9 @@ export default function DropZone({ expenses, setExpenses, people }) {
             key={expense.id}
             style={{
               backgroundColor: expense.color,
-              border: `1px solid ${adjustColor(expense.color.toString(), -40)}`, // Darker border
+              border: `1px solid ${adjustColor(expense.color.toString(), -20)}`, // Darker border
             }}
-            className={`p-4 h-min z-20 hover:scale-[1.02] transition-all rounded-lg drop-shadow-lg bg-opacity-30`}
+            className={`p-4 h-min z-20 hover:scale-[1.02] transition-all drop-shadow-lg bg-opacity-30`}
           >
             <CardContent className="space-y-2">
               <Flex align="center" className="flex-col">
@@ -218,7 +218,7 @@ export default function DropZone({ expenses, setExpenses, people }) {
                 style={{
                   backgroundColor: adjustColor(expense.color.toString(), -90),
                 }}
-                className=" text-white text-sm px-4 py-2 rounded-lg shadow hover:scale-[1.02] transition w-full"
+                className=" text-white text-sm px-4 py-2 rounded-md shadow hover:scale-[1.02] transition w-full"
               >
                 Remove Expense
               </Button>
@@ -226,7 +226,7 @@ export default function DropZone({ expenses, setExpenses, people }) {
           </Card>
         ))
       ) : (
-        <div className="text-center font-semibold col-span-3 text-gray-500 text-lg mx-auto my-auto">
+        <div className="text-center font-semibold col-span-3 text-gray-500 text-lg h-full w-full mt-[calc(50%-2rem)]">
           Drop Expenses Here
         </div>
       )}

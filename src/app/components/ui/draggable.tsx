@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
+import { Tooltip } from "@radix-ui/themes";
 
 export function Draggable({ id, children }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
@@ -17,15 +18,17 @@ export function Draggable({ id, children }) {
   };
 
   const DraggableElement = (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className="rounded-lg bg-gray-200 cursor-grab"
-      {...listeners}
-      {...attributes}
-    >
-      {children}
-    </div>
+    <Tooltip content="Drag me into the section at the right!">
+      <div
+        ref={setNodeRef}
+        style={style}
+        className="rounded-lg bg-gray-200 cursor-grab"
+        {...listeners}
+        {...attributes}
+      >
+        {children}
+      </div>
+    </Tooltip>
   );
 
   // Move the dragging element to a portal if it's being dragged

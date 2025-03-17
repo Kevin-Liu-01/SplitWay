@@ -1,4 +1,4 @@
-import { TrashIcon, UserCircle2Icon } from "lucide-react";
+import { TrashIcon, UserCircle2Icon, UserRoundPlusIcon } from "lucide-react";
 import React, { useState, ChangeEvent, KeyboardEvent } from "react";
 import MoneyText from "../ui/moneyText";
 import { Flex } from "@radix-ui/themes";
@@ -41,8 +41,9 @@ const PeopleList: React.FC<PeopleListProps> = ({
   };
 
   return (
-    <div className="w-1/2 h-1/4">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">
+    <div className="w-full sm:w-1/2 h-[calc(100%-6.25rem)]">
+      <h2 className="flex items-center text-xl font-semibold text-gray-800 mb-4">
+        <UserRoundPlusIcon className="size-6 mr-2" />
         People in Group
       </h2>
 
@@ -62,7 +63,7 @@ const PeopleList: React.FC<PeopleListProps> = ({
           Add
         </button>
       </div>
-      <ul className="space-y-2">
+      <ul className="space-y-2 h-full overflow-y-scroll">
         {people.map((p) => (
           <li
             key={p.id}

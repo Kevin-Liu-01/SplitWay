@@ -18,7 +18,7 @@ export function Droppable({ id, children }) {
         className="absolute inset-0 bg-[url('/images/graybg.jpg')] opacity-10 bg-repeat bg-[auto_150px]
  rounded-lg z-10"
       ></div>
-      <div className="grid p-4 grid-cols-3 h-min max-h-full overflow-x-scroll gap-4 ">
+      <div className="grid p-3 grid-cols-3 h-screen sm:h-min max-h-full overflow-x-scroll gap-4 ">
         {children}
       </div>
     </div>

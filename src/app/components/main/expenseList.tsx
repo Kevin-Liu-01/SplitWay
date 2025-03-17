@@ -6,6 +6,7 @@ import MoneyText from "../ui/moneyText";
 import { Flex } from "@radix-ui/themes";
 import { HexColorPicker } from "react-colorful"; // Import react-colorful
 import { adjustColor } from "@/app/utils/util";
+import { WalletIcon } from "lucide-react";
 
 interface Expense {
   id: string;
@@ -78,17 +79,20 @@ const ExpenseList: React.FC<ExpenseListProps> = ({
   };
 
   return (
-    <div className="w-1/2 h-3/4 z-50 space-y-4">
-      <h2 className="text-xl font-semibold text-gray-800">Add an Expense</h2>
+    <div className="w-full sm:w-1/2 sm:max-w-[24%] h-full z-50 space-y-4">
+      <h2 className="flex items-center text-xl font-semibold text-gray-800">
+        <WalletIcon className="size-6 mr-2" />
+        Add an Expense
+      </h2>
 
       {/* Expense list */}
-      <div className="relative bg-gray-100 z-50 border-gray-200 border h-[calc(100%-13.75rem)] rounded-lg">
-        <Flex className="h-full overflow-y-scroll flex-col space-y-2 p-3">
+      <Flex className="relative bg-gray-100 z-50 border-gray-200 border h-[calc(100%-24rem)] rounded-lg">
+        <Flex className="h-full w-full overflow-y-scroll flex-col space-y-2 p-3">
           {sharedExpenses.map((expense) => (
             <Draggable key={expense.id} id={expense.id}>
               <Flex
                 align="center"
-                className="flex py-2 px-3 rounded-lg hover:border-2 hover:border-blue-300 border-dashed hover:scale-105 transition-all justify-between"
+                className="flex py-2 px-3 rounded-md hover:border-2 hover:border-blue-300 border-dashed hover:scale-105 transition-all justify-between"
                 style={{
                   backgroundColor: expense.color,
                   border: `1px solid ${adjustColor(
@@ -97,7 +101,7 @@ const ExpenseList: React.FC<ExpenseListProps> = ({
                   )}`, // Darker border
                 }}
               >
-                <span className="font-semibold border-r border-black/40 pr-2">
+                <span className="font-semibold truncate border-r border-black/40 pr-2">
                   {expense.name}
                 </span>
                 <span className="ml-2 truncate text-sm text-black/40">
@@ -111,7 +115,7 @@ const ExpenseList: React.FC<ExpenseListProps> = ({
             </Draggable>
           ))}
         </Flex>
-      </div>
+      </Flex>
 
       {/* Form to add new expense */}
       <Flex className="flex-col mt-6 bg-gray-100 border-gray-200 border p-4 rounded-lg">
