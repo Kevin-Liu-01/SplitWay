@@ -53,11 +53,11 @@ const PeopleList: React.FC<PeopleListProps> = ({
 
   return (
     <div className="w-full sm:w-1/2 h-[calc(100%-7.4rem)]">
-      <h2 className="flex items-center text-xl font-semibold text-gray-800 mb-4">
+      <h2 className="flex items-center text-lg font-semibold text-gray-800 mb-4">
         <UserRoundPlusIcon className="size-6 mr-2" />
         People in Group
       </h2>
-      <div className="flex mb-4 p-2 bg-gray-100 rounded-lg border border-gray-200">
+      <div className="flex text-sm mb-4 p-2 bg-gray-100 rounded-lg border border-gray-200">
         <input
           type="text"
           placeholder="Add Person"
@@ -68,7 +68,7 @@ const PeopleList: React.FC<PeopleListProps> = ({
         />
         <button
           onClick={handleAddClick}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md focus:outline-none hover:bg-blue-600"
+          className="bg-blue-500 font-semibold text-white px-4 py-2 rounded-md shadow-sm focus:outline-none hover:bg-blue-600"
         >
           Add
         </button>
@@ -79,18 +79,18 @@ const PeopleList: React.FC<PeopleListProps> = ({
             <Tooltip content={p.name + " owes $" + p.balance.toFixed(2)}>
               <li
                 key={p.id}
-                className="flex items-center p-2 border-b shadow-sm bg-white rounded-lg border-gray-200"
+                className="flex hover:scale-[1.02] transition-all items-center p-2 border shadow-sm bg-white rounded-lg border-gray-200"
               >
                 <Flex
                   align="center"
-                  className="text-lg mr-2 font-semibold text-gray-800"
+                  className="text-sm mr-2 font-semibold text-gray-800"
                 >
                   <UserCircle2Icon className="w-6 h-6 mr-2" />
                   {p.name}
                 </Flex>
                 <span className="ml-auto truncate text-gray-600">
                   <MoneyText
-                    className="text-lg"
+                    className="text-sm"
                     amount={p.balance?.toFixed(2) || 0}
                   />
                 </span>

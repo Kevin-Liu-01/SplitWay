@@ -164,7 +164,7 @@ export default function DropZone({ expenses, setExpenses, people }) {
 
   return (
     <Droppable id="drop-zone">
-      {expenses.length > 0 ? (
+      {expenses.length > 0 &&
         expenses.map((expense) => (
           <Card
             key={expense.id}
@@ -313,12 +313,7 @@ export default function DropZone({ expenses, setExpenses, people }) {
               </Button>
             </CardContent>
           </Card>
-        ))
-      ) : (
-        <div className="text-center font-semibold col-span-3 text-gray-500 text-lg h-full w-full mt-[calc(50%-2rem)]">
-          Drop Expenses Here
-        </div>
-      )}
+        ))}
     </Droppable>
   );
 }

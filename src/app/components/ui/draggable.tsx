@@ -22,7 +22,7 @@ export function Draggable({ id, children }) {
       <div
         ref={setNodeRef}
         style={style}
-        className="rounded-lg bg-gray-200 cursor-grab"
+        className="rounded-lg shadow-sm bg-gray-200 cursor-grab"
         {...listeners}
         {...attributes}
       >

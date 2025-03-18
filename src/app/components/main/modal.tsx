@@ -14,10 +14,11 @@ export default function Modal() {
         >
           Beta
         </Flex> */}
-        <span className="text-nowrap hidden sm:flex">
-          Learn more about <span className="ml-1 font-semibold"> Splitway</span>
+        <span className="text-nowrap truncate hidden sm:flex">
+          Learn more about{" "}
+          <span className="ml-1 mr-2 font-semibold"> Splitway</span>
         </span>
-        <span className="sm:ml-auto ">v1.0.0</span>
+        <span className="sm:ml-auto">v1.0.1</span>
       </Flex>
       <Dialog.Root>
         <Dialog.Trigger>
