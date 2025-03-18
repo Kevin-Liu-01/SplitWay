@@ -114,6 +114,7 @@ export default function DropZone({ expenses, setExpenses, people }) {
           >
             <span className="text-sm font-medium">{person.name}</span>
             <Button
+              tooltip={"Add " + person.name + " as a payer"}
               onClick={() => {
                 const updatedPayments = [
                   ...expense.assignedPayments,
@@ -223,8 +224,7 @@ export default function DropZone({ expenses, setExpenses, people }) {
                       }}
                       className="text-sm truncate font-semibold"
                     >
-                      <span>{p.name}</span>
-                      <span>:</span>
+                      {p.name}
                     </Text>
                     <Tooltip
                       content={`

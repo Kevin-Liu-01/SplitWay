@@ -1,7 +1,18 @@
-import { TrashIcon, UserCircle2Icon, UserRoundPlusIcon } from "lucide-react";
+import {
+  EditIcon,
+  InfoIcon,
+  LockIcon,
+  SaveIcon,
+  TrashIcon,
+  UserCircle2Icon,
+  UserRoundPlusIcon,
+  XIcon,
+} from "lucide-react";
 import React, { useState, ChangeEvent, KeyboardEvent } from "react";
 import MoneyText from "../ui/moneyText";
-import { Flex } from "@radix-ui/themes";
+import { Flex, Tooltip, Dialog } from "@radix-ui/themes";
+import { Button } from "../ui/button";
+import Modal from "./modal";
 
 interface Person {
   id: number;
@@ -41,13 +52,12 @@ const PeopleList: React.FC<PeopleListProps> = ({
   };
 
   return (
-    <div className="w-full sm:w-1/2 h-[calc(100%-6.25rem)]">
+    <div className="w-full sm:w-1/2 h-[calc(100%-7.4rem)]">
       <h2 className="flex items-center text-xl font-semibold text-gray-800 mb-4">
         <UserRoundPlusIcon className="size-6 mr-2" />
         People in Group
       </h2>
-
-      <div className="flex mb-4">
+      <div className="flex mb-4 p-2 bg-gray-100 rounded-lg border border-gray-200">
         <input
           type="text"
           placeholder="Add Person"
@@ -63,33 +73,39 @@ const PeopleList: React.FC<PeopleListProps> = ({
           Add
         </button>
       </div>
-      <ul className="space-y-2 h-full overflow-y-scroll">
-        {people.map((p) => (
-          <li
-            key={p.id}
-            className="flex justify-between items-center p-2 border-b border-gray-200"
-          >
-            <Flex
-              align="center"
-              className="text-lg font-semibold text-gray-800"
-            >
-              <UserCircle2Icon className="w-6 h-6 mr-2" />
-              {p.name}
-            </Flex>
-            <span className="text-gray-600">
-              Balance Owed:{" "}
-              <MoneyText
-                className="text-lg"
-                amount={p.balance?.toFixed(2) || 0}
-              />
-            </span>
-            <TrashIcon
-              onClick={() => removePerson(p.id)}
-              className=" bg-red-500 text-white p-1 rounded-md hover:scale-[1.02] focus:outline-none hover:bg-red-600"
-            />
-          </li>
-        ))}
-      </ul>
+      <Flex className="h-full flex-col">
+        <ul className="space-y-2 h-full mb-4 p-3 overflow-y-scroll bg-gray-100 rounded-lg border border-gray-200">
+          {people.map((p) => (
+            <Tooltip content={p.name + " owes $" + p.balance.toFixed(2)}>
+              <li
+                key={p.id}
+                className="flex items-center p-2 border-b shadow-sm bg-white rounded-lg border-gray-200"
+              >
+                <Flex
+                  align="center"
+                  className="text-lg mr-2 font-semibold text-gray-800"
+                >
+                  <UserCircle2Icon className="w-6 h-6 mr-2" />
+                  {p.name}
+                </Flex>
+                <span className="ml-auto truncate text-gray-600">
+                  <MoneyText
+                    className="text-lg"
+                    amount={p.balance?.toFixed(2) || 0}
+                  />
+                </span>
+                <Tooltip content={"Remove " + p.name + " from group"}>
+                  <TrashIcon
+                    onClick={() => removePerson(p.id)}
+                    className="ml-2 bg-red-500 text-white p-1 rounded-md hover:scale-[1.02] focus:outline-none hover:bg-red-600"
+                  />
+                </Tooltip>
+              </li>
+            </Tooltip>
+          ))}
+        </ul>
+        <Modal />
+      </Flex>
     </div>
   );
 };

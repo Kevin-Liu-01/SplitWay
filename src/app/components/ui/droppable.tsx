@@ -10,7 +10,7 @@ export function Droppable({ id, children }) {
     <div
       ref={setNodeRef}
       className={`${
-        isOver ? "border-blue-400 bg-blue-200" : "border-gray-400 bg-gray-200"
+        isOver ? "border-blue-400 bg-blue-200" : "border-gray-400 bg-gray-100"
       }
        border z-20 transition-all rounded-lg relative border-dashed w-full h-full`}
     >
