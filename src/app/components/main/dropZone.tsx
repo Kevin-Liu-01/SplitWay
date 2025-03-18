@@ -1,53 +1,79 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Droppable } from "../ui/droppable";
 import { Card, CardContent } from "../ui/card";
 import { Checkbox } from "../ui/checkbox";
 import { Button } from "../ui/button";
-import { CircleDollarSignIcon, TrashIcon, UserSearchIcon } from "lucide-react";
-import { Flex, Text } from "@radix-ui/themes";
+import {
+  CircleDollarSignIcon,
+  LockIcon,
+  LockOpenIcon,
+  SaveIcon,
+  TrashIcon,
+} from "lucide-react";
+import { Flex, Text, Tooltip } from "@radix-ui/themes";
 import MoneyText from "../ui/moneyText";
 import { adjustColor } from "@/app/utils/util";
 
 export default function DropZone({ expenses, setExpenses, people }) {
-  // Update the expense amounts when the amount is modified
-  const updateExpenseAmount = (
-    expenseId: string,
-    personId: string,
-    newAmount: string
-  ) => {
+  const [localAmounts, setLocalAmounts] = React.useState({});
+
+  const setLocalAmount = (expenseId, personId, amount) => {
+    setLocalAmounts((prev) => ({
+      ...prev,
+      [`${expenseId}-${personId}`]: amount,
+    }));
+  };
+
+  const updateExpenseAmount = (expenseId, personId, newAmount) => {
     setExpenses((prev) =>
       prev.map((expense) => {
         if (expense.id !== expenseId) return expense;
-        const totalAmount = expense.amount;
-        const updatedPayments = expense.assignedPayments.map((p) =>
-          p.id === personId ? { ...p, amount: parseFloat(newAmount) } : p
+
+        let updatedPayments = expense.assignedPayments.map((p) =>
+          p.id === personId
+            ? { ...p, amount: parseFloat(newAmount), locked: true }
+            : p
         );
 
-        const remainingAmount =
-          totalAmount -
-          updatedPayments.reduce(
-            (sum, p) => sum + (p.id === personId ? p.amount : 0),
-            0
-          );
-        const otherParticipants = updatedPayments.filter(
-          (p) => p.id !== personId
+        const lockedPayments = updatedPayments.filter((p) => p.locked);
+        const unlockedPayments = updatedPayments.filter((p) => !p.locked);
+
+        const lockedTotal = lockedPayments.reduce(
+          (sum, p) => sum + p.amount,
+          0
         );
-        if (otherParticipants.length > 0) {
-          const splitAmount = remainingAmount / otherParticipants.length;
-          updatedPayments.forEach((p) => {
-            if (p.id !== personId) p.amount = splitAmount;
-          });
+        const remainingAmount = expense.amount - lockedTotal;
+
+        if (unlockedPayments.length > 0) {
+          const splitAmount = remainingAmount / unlockedPayments.length;
+          updatedPayments = updatedPayments.map((p) =>
+            p.locked ? p : { ...p, amount: parseFloat(splitAmount.toFixed(2)) }
+          );
         }
 
-        //handle NaN errors
-        updatedPayments.forEach((p) => {
-          if (isNaN(p.amount)) {
-            p.amount = 0;
-          }
-        });
+        updatedPayments.forEach((p) =>
+          setLocalAmount(expenseId, p.id, p.amount.toFixed(2))
+        );
 
         return { ...expense, assignedPayments: updatedPayments };
       })
+    );
+  };
+
+  const toggleLock = (expenseId, personId, setLocked?) => {
+    setExpenses((prev) =>
+      prev.map((expense) =>
+        expense.id === expenseId
+          ? {
+              ...expense,
+              assignedPayments: expense.assignedPayments.map((p) =>
+                p.id === personId
+                  ? { ...p, locked: setLocked === true ? true : !p.locked }
+                  : p
+              ),
+            }
+          : expense
+      )
     );
   };
 
@@ -116,7 +142,7 @@ export default function DropZone({ expenses, setExpenses, people }) {
     );
   }
 
-  // When a checkbox is changed, update the person's amount owed in the expense to 0
+  // When a checkbox is changed, update the person's amount owed in the expense to 0 and lock it
   function onChecked(expenseId: string, personId: string, checked: boolean) {
     setExpenses((prev) =>
       prev.map((expense) => {
@@ -126,6 +152,10 @@ export default function DropZone({ expenses, setExpenses, people }) {
             ? { ...p, paid: checked, amount: checked ? 0 : p.amount } // If paid, set amount to 0
             : p
         );
+
+        //lock
+        toggleLock(expenseId, personId, true);
+
         return { ...expense, assignedPayments: updatedPayments };
       })
     );
@@ -139,9 +169,9 @@ export default function DropZone({ expenses, setExpenses, people }) {
             key={expense.id}
             style={{
               backgroundColor: expense.color,
-              border: `1px solid ${adjustColor(expense.color.toString(), -20)}`, // Darker border
+              border: `1px solid ${adjustColor(expense.color.toString(), -20)}`,
             }}
-            className={`p-4 h-min z-20 hover:scale-[1.02] transition-all drop-shadow-lg bg-opacity-30`}
+            className="p-4 h-min z-20 hover:scale-[1.02] transition-all drop-shadow-lg bg-opacity-30"
           >
             <CardContent className="space-y-2">
               <Flex align="center" className="flex-col">
@@ -172,46 +202,105 @@ export default function DropZone({ expenses, setExpenses, people }) {
                 </Flex>
               </Flex>
 
-              {expense.assignedPayments.map((p) => (
-                <div
-                  key={p.id}
-                  className="flex items-center justify-between w-full gap-2 border-gray-800/40 border-b pb-2"
-                >
-                  <Checkbox
-                    checked={p.paid}
-                    onCheckedChange={(checked) =>
-                      onChecked(expense.id, p.id, checked)
-                    } // Handle checkbox change
-                  />
-                  <Text
-                    style={{
-                      color: adjustColor(expense.color.toString(), -100),
-                    }}
-                    className="text-sm truncate font-semibold"
-                  >
-                    <span>{p.name}</span>
-                    <span>:</span>
-                  </Text>
+              {expense.assignedPayments.map((p) => {
+                const localAmount =
+                  localAmounts[`${expense.id}-${p.id}`] || p.amount.toFixed(2);
 
-                  <input
-                    value={p.amount?.toFixed(2)}
-                    className="border ml-auto text-sm font-inconsolata border-gray-300 rounded-lg text-center p-1 w-[3.5rem] focus:ring-2 focus:ring-blue-500"
-                    onChange={(e) =>
-                      updateExpenseAmount(expense.id, p.id, e.target.value)
-                    }
-                  />
-                  <Button
-                    onClick={() => removePersonFromExpense(expense.id, p.id)}
-                    className="bg-red-500 text-white p-2 rounded-lg shadow hover:bg-red-600 transition"
+                return (
+                  <div
+                    key={p.id}
+                    className="flex items-center justify-between w-full gap-2 border-gray-800/40 border-b pb-2"
                   >
-                    <TrashIcon size={16} />
-                  </Button>
-                </div>
-              ))}
+                    <Checkbox
+                      checked={p.paid}
+                      onCheckedChange={(checked) =>
+                        onChecked(expense.id, p.id, checked)
+                      }
+                    />
+                    <Text
+                      style={{
+                        color: adjustColor(expense.color.toString(), -100),
+                      }}
+                      className="text-sm truncate font-semibold"
+                    >
+                      <span>{p.name}</span>
+                      <span>:</span>
+                    </Text>
+                    <Tooltip
+                      content={`
+                      
+                      ${
+                        expense.payer === "Everyone"
+                          ? `${p.name} is splitting this expense`
+                          : p.name === expense.payer
+                          ? `${p.name} covered the expense`
+                          : `${p.name} owes ${
+                              expense.payer
+                            } $${p.amount.toFixed(2)}`
+                      }
+                      
+                      
+                     `}
+                    >
+                      <input
+                        value={localAmount}
+                        className="border ml-auto text-sm font-inconsolata border-gray-300 rounded-lg text-center p-1 w-[3.5rem] focus:ring-2 focus:ring-blue-500 disabled:bg-gray-200"
+                        disabled={p.locked}
+                        onChange={(e) =>
+                          setLocalAmount(expense.id, p.id, e.target.value)
+                        }
+                      />
+                    </Tooltip>
+                    <Flex align="center" className="">
+                      <Button
+                        tooltip={"Save Changes"}
+                        onClick={() =>
+                          updateExpenseAmount(
+                            expense.id,
+                            p.id,
+                            parseFloat(localAmount)
+                          )
+                        }
+                        className="bg-green-500 text-white p-1.5 rounded-l-lg rounded-r-none shadow hover:bg-green-600 transition"
+                      >
+                        <SaveIcon size={16} />
+                      </Button>
+
+                      <Button
+                        tooltip={
+                          p.locked ? "Editing Disabled" : "Editing Enabled"
+                        }
+                        onClick={() => toggleLock(expense.id, p.id)}
+                        className={`p-1.5 rounded-none shadow transition ${
+                          p.locked
+                            ? "bg-gray-500 text-white"
+                            : "bg-blue-500 hover:bg-blue-600 text-white"
+                        }`}
+                      >
+                        {p.locked ? (
+                          <LockIcon size={16} />
+                        ) : (
+                          <LockOpenIcon size={16} />
+                        )}
+                      </Button>
+                      <Button
+                        tooltip={"Remove Person"}
+                        onClick={() =>
+                          removePersonFromExpense(expense.id, p.id)
+                        }
+                        className="bg-red-500 text-white p-1.5 rounded-l-none rounded-r-lg shadow hover:bg-red-600 transition"
+                      >
+                        <TrashIcon size={16} />
+                      </Button>
+                    </Flex>
+                  </div>
+                );
+              })}
 
               {addPerson(expense)}
 
               <Button
+                tooltip={"Removes expense and resets payments"}
                 onClick={() =>
                   setExpenses((prev) => prev.filter((e) => e.id !== expense.id))
                 }

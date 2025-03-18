@@ -8,13 +8,10 @@ import { v4 as uuidv4 } from "uuid";
 import { Flex, Text, Tooltip } from "@radix-ui/themes";
 import useLocalStorage from "../utils/useLocalStorage";
 import { SplitIcon } from "lucide-react";
+import { adjustColor } from "../utils/util";
+import MoneyText from "./ui/moneyText";
 
-// Type definitions for Person, Expense, and AssignedPayment
-interface Person {
-  id: string;
-  name: string;
-  balance: number;
-}
+// Type definitions for Expense and AssignedPayment
 
 interface ExpenseItem {
   id: string;
@@ -203,9 +200,17 @@ export default function ExpenseTracker() {
                             index % 2 === 0 ? "-5deg" : "5deg"
                           })`,
                           zIndex: 5 - index,
+                          border: `1px solid ${adjustColor(
+                            expense.color.toString(),
+                            -20
+                          )}`,
                         }}
                       >
-                        {expense.name} <br /> ${expense.amount.toFixed(2)}
+                        {expense.name} <br />{" "}
+                        <MoneyText
+                          className="absolute mt-[-0.3rem]"
+                          amount={expense.amount.toFixed(2)}
+                        />
                       </div>
                     </Tooltip>
                   ))}

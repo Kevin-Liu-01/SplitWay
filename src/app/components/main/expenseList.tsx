@@ -66,7 +66,7 @@ const ExpenseList: React.FC<ExpenseListProps> = ({
         name: expenseName,
         amount: parseFloat(expenseAmount),
         color: selectedColor,
-        remove: true,
+        remove: expenseRemove,
         payer: payer, // Include payer in the expense
       };
       addExpense(newExpense);
@@ -135,7 +135,7 @@ const ExpenseList: React.FC<ExpenseListProps> = ({
           </select>{" "}
           <input
             type="text"
-            placeholder="Name"
+            placeholder="Expense"
             className="border p-2 w-full sm:w-1/2 mb-2 rounded-md"
             value={expenseName}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -144,7 +144,7 @@ const ExpenseList: React.FC<ExpenseListProps> = ({
           />
           <input
             type="number"
-            placeholder="Amount"
+            placeholder="Amt."
             className="border p-2 w-full sm:w-1/3 mb-2 rounded-md"
             value={expenseAmount}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -167,7 +167,7 @@ const ExpenseList: React.FC<ExpenseListProps> = ({
             id="removeAfterAdd"
             className="ml-2"
             checked={expenseRemove}
-            onChange={() => setExpenseRemove((prev) => !prev)}
+            onChange={() => setExpenseRemove(!expenseRemove)}
           />
         </div>
 
@@ -191,6 +191,7 @@ const ExpenseList: React.FC<ExpenseListProps> = ({
 
         {/* Add expense button */}
         <Button
+          tooltip="Load your expense into the list"
           onClick={addExpenseHandler}
           className="mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg w-full sm:w-auto hover:bg-blue-700 transition duration-200"
         >
