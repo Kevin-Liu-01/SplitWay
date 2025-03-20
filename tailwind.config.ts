@@ -8,10 +8,8 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      colors: {
-        retroRed: "#BF3131",
-        retroWhite: "#F1EAD1",
-        retroBlue: "#0E273C",
+      screens: {
+        "3xl": "1920px", // Custom breakpoint
       },
       cursor: {
         default: "url(/images/logos/cursorsmall.png) 8 8, auto",

@@ -23,8 +23,8 @@ export function Droppable({ id, children }) {
         className={`${
           !children
             ? "flex relative justify-center align-center h-full w-full"
-            : "grid grid-cols-1 sm:h-min sm:grid-cols-2 "
-        } p-3 h-screen max-h-full overflow-x-scroll gap-4 `}
+            : "grid grid-cols-1 h-min lg:grid-cols-2 3xl:grid-cols-3"
+        } p-3 sm:h-screen max-h-full overflow-x-scroll gap-4 `}
       >
         {!children ? (
           <Flex
