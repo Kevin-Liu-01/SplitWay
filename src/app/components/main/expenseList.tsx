@@ -79,125 +79,126 @@ const ExpenseList: React.FC<ExpenseListProps> = ({
   };
 
   return (
-    <div className="w-full sm:w-1/2 sm:max-w-[24%] h-full z-50 space-y-4">
-      <h2 className="flex items-center text-lg font-semibold text-gray-800">
+    <div className="w-full sm:w-1/2 sm:max-w-[24%] h-full z-50">
+      <h2 className="flex items-center mb-4 text-lg font-semibold text-gray-800">
         <WalletIcon className="size-6 mr-2" />
         Add an Expense
       </h2>
-
-      {/* Expense list */}
-      <Flex className="relative bg-gray-100 z-50 border-gray-200 border h-[calc(100%-23.5rem)] rounded-lg">
-        <Flex className="h-full w-full overflow-y-scroll flex-col space-y-2 p-3">
-          {sharedExpenses.map((expense) => (
-            <Draggable key={expense.id} id={expense.id}>
-              <Flex
-                align="center"
-                className="flex py-2 px-3 text-sm rounded-md hover:border-2 hover:border-blue-300 border-dashed hover:scale-105 transition-all justify-between"
-                style={{
-                  backgroundColor: expense.color,
-                  border: `1px solid ${adjustColor(
-                    expense.color.toString(),
-                    -40
-                  )}`, // Darker border
-                }}
-              >
-                <span className="font-semibold truncate border-r border-black/40 pr-2">
-                  {expense.name}
-                </span>
-                <span className="mx-2 truncate text-black/40">
-                  Paid by {expense.payer}
-                </span>
-                <MoneyText
-                  className="ml-auto"
-                  amount={expense.amount.toFixed(2)}
-                />
-              </Flex>
-            </Draggable>
-          ))}
-        </Flex>
-      </Flex>
-
-      {/* Form to add new expense */}
-      <Flex className="flex-col mt-6 bg-gray-100 border-gray-200 border p-3 rounded-lg">
-        <Flex align="center" className="gap-2">
-          <select
-            value={payer}
-            onChange={(e) => setPayer(e.target.value)}
-            className="border shadow-sm font-semibold mb-2 p-2 w-1/2 rounded-md"
-          >
-            <option disabled>Choose who to pay back</option>
-            <option value={"Everyone"}>Everyone</option>
-            {people.map((person) => (
-              <option key={person.id} value={person.name}>
-                {person.name || ""}
-              </option>
+      <Flex className="sm:h-full flex-col-reverse sm:flex-col gap-4">
+        {/* Expense list */}
+        <Flex className="relative bg-gray-100 z-50 border-gray-200 border h-[calc(100%-23.5rem)] rounded-lg">
+          <Flex className="h-full w-full overflow-y-scroll flex-col space-y-2 p-3">
+            {sharedExpenses.map((expense) => (
+              <Draggable key={expense.id} id={expense.id}>
+                <Flex
+                  align="center"
+                  className="flex py-2 px-3 text-sm select-none sm:select-all rounded-md hover:border-2 hover:border-blue-300 border-dashed hover:scale-105 transition-all justify-between"
+                  style={{
+                    backgroundColor: expense.color,
+                    border: `1px solid ${adjustColor(
+                      expense.color.toString(),
+                      -40
+                    )}`, // Darker border
+                  }}
+                >
+                  <span className="font-semibold truncate border-r border-black/40 pr-2">
+                    {expense.name}
+                  </span>
+                  <span className="mx-2 truncate text-black/40">
+                    Paid by {expense.payer}
+                  </span>
+                  <MoneyText
+                    className="ml-auto"
+                    amount={expense.amount.toFixed(2)}
+                  />
+                </Flex>
+              </Draggable>
             ))}
-          </select>{" "}
-          <input
-            type="text"
-            placeholder="Expense"
-            className="border shadow-sm p-2 w-full sm:w-1/2 mb-2 rounded-md"
-            value={expenseName}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setExpenseName(e.target.value)
-            }
-          />
-          <input
-            type="number"
-            placeholder="Amt."
-            className="border shadow-sm p-2 w-full sm:w-1/3 mb-2 rounded-md"
-            value={expenseAmount}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              (parseInt(e.target.value) || e.target.value === "") &&
-              setExpenseAmount(e.target.value)
-            }
-          />
+          </Flex>
         </Flex>
 
-        {/* Remove after adding checkbox */}
-        <div className="flex items-center space-x-2 justify-center">
-          <label
-            htmlFor="removeAfterAdd"
-            className="text-sm flex items-center cursor-pointer"
-          >
-            Remove after adding:
-          </label>
-          <input
-            type="checkbox"
-            id="removeAfterAdd"
-            className="ml-2"
-            checked={expenseRemove}
-            onChange={() => setExpenseRemove(!expenseRemove)}
-          />
-        </div>
-
-        {/* Color Picker */}
-        <div className="mt-4 text-center">
-          <label className="block text-sm mb-2">
-            Pick a color for this expense:
-          </label>
-          <Flex className="flex-col h-[120px] w-full max-h-[120px]">
-            <HexColorPicker
-              color={selectedColor}
-              onChange={setSelectedColor}
-              className="w-full h-full max-h-[120px] mx-auto "
-              defaultValue={"e0e0e0"}
+        {/* Form to add new expense */}
+        <Flex className="flex-col bg-gray-100 border-gray-200 border p-3 rounded-lg">
+          <Flex align="center" className="gap-2">
+            <select
+              value={payer}
+              onChange={(e) => setPayer(e.target.value)}
+              className="border shadow-sm font-semibold mb-2 p-2 w-1/2 rounded-md"
+            >
+              <option disabled>Choose who to pay back</option>
+              <option value={"Everyone"}>Everyone</option>
+              {people.map((person) => (
+                <option key={person.id} value={person.name}>
+                  {person.name || ""}
+                </option>
+              ))}
+            </select>{" "}
+            <input
+              type="text"
+              placeholder="Expense"
+              className="border shadow-sm p-2 w-full sm:w-1/2 mb-2 rounded-md"
+              value={expenseName}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setExpenseName(e.target.value)
+              }
             />
-            {/* Error message */}
-            {error && (
-              <p className="text-center mt-2 text-red-500 text-sm">{error}</p>
-            )}
+            <input
+              type="number"
+              placeholder="Amt."
+              className="border shadow-sm p-2 w-full sm:w-1/3 mb-2 rounded-md"
+              value={expenseAmount}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                (parseInt(e.target.value) || e.target.value === "") &&
+                setExpenseAmount(e.target.value)
+              }
+            />
           </Flex>
-        </div>
 
-        {/* Add expense button */}
-        <Button
-          tooltip="Load your expense into the list"
-          onClick={addExpenseHandler}
-          className="mt-4 bg-blue-600 text-white py-2 px-4 rounded-md w-full sm:w-auto shadow-sm hover:bg-blue-700 transition duration-200"
-        >
-          Add Expense
-        </Button>
+          {/* Remove after adding checkbox */}
+          <div className="flex items-center space-x-2 justify-center">
+            <label
+              htmlFor="removeAfterAdd"
+              className="text-sm flex items-center cursor-pointer"
+            >
+              Remove after adding:
+            </label>
+            <input
+              type="checkbox"
+              id="removeAfterAdd"
+              className="ml-2"
+              checked={expenseRemove}
+              onChange={() => setExpenseRemove(!expenseRemove)}
+            />
+          </div>
+
+          {/* Color Picker */}
+          <div className="mt-4 text-center">
+            <label className="block text-sm mb-2">
+              Pick a color for this expense:
+            </label>
+            <Flex className="flex-col h-[120px] w-full max-h-[120px]">
+              <HexColorPicker
+                color={selectedColor}
+                onChange={setSelectedColor}
+                className="w-full h-full max-h-[120px] mx-auto "
+                defaultValue={"e0e0e0"}
+              />
+              {/* Error message */}
+              {error && (
+                <p className="text-center mt-2 text-red-500 text-sm">{error}</p>
+              )}
+            </Flex>
+          </div>
+
+          {/* Add expense button */}
+          <Button
+            tooltip="Load your expense into the list"
+            onClick={addExpenseHandler}
+            className="mt-4 bg-blue-600 text-white py-2 px-4 rounded-md w-full sm:w-auto shadow-sm hover:bg-blue-700 transition duration-200"
+          >
+            Add Expense
+          </Button>
+        </Flex>
       </Flex>
     </div>
   );

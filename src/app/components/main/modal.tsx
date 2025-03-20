@@ -18,7 +18,7 @@ export default function Modal() {
           Learn more about{" "}
           <span className="ml-1 mr-2 font-semibold"> Splitway</span>
         </span>
-        <span className="sm:ml-auto">v1.0.1</span>
+        <span className="ml-2 sm:ml-auto">v1.0.1</span>
       </Flex>
       <Dialog.Root>
         <Dialog.Trigger>

@@ -52,7 +52,7 @@ const PeopleList: React.FC<PeopleListProps> = ({
   };
 
   return (
-    <div className="w-full sm:w-1/2 h-[calc(100%-7.4rem)]">
+    <div className="w-full relative sm:w-1/2 h-[calc(100%-7.4rem)]">
       <h2 className="flex items-center text-lg font-semibold text-gray-800 mb-4">
         <UserRoundPlusIcon className="size-6 mr-2" />
         People in Group
@@ -74,7 +74,7 @@ const PeopleList: React.FC<PeopleListProps> = ({
         </button>
       </div>
       <Flex className="h-full flex-col">
-        <ul className="space-y-2 h-full mb-4 p-3 overflow-y-scroll bg-gray-100 rounded-lg border border-gray-200">
+        <ul className="space-y-2 sm:h-full mb-4 p-3 overflow-y-scroll bg-gray-100 rounded-lg border border-gray-200">
           {people.map((p) => (
             <Tooltip content={p.name + " owes $" + p.balance.toFixed(2)}>
               <li
